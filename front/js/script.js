@@ -24,7 +24,19 @@ function buildHtml(canap){
     </a> `
 }
 
+/*===================================================================*/
+/* récupération des produits*/
+const url = new URL("http://localhost:3000/api/products");
+
+const getData = async () => {
+    let response = await fetch(url)
+    if (response.ok){
+        let data = await response.json()
+        console.log(data)
+    };}
+    getData()
 /*===============================================================*/
+/* écoute du produit cliqué*/
 window.addEventListener('items', () => {
     let canape = JSON.parse(canapes);
     let searchParams = new URLSearchParams(window.location.search);
@@ -36,19 +48,8 @@ window.addEventListener('items', () => {
         window.location.pathname = 'index.html'
     }
 })
-/*===================================================================*/
-/* récupération produit et affichage sur page produit*/
-const url = new URL("http://localhost:3000/api/products");
-    
-const getData = async () => {
-    let response = await fetch(url)
-    if (response.ok){
-        let data = await response.json()
-        console.log(data)
-    };}
-getData()
 
-
+/* construction de la page produit*/
 const writeHtml = async (data) => {
     let img = document.createElement('img');
     img.src = data.imageUrl;
