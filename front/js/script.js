@@ -10,7 +10,6 @@ fetch("http://localhost:3000/api/products/")
 document.getElementById("items").innerHTML = html;
 });
 
- DataProducts();
 //construction du html
 function buildHtml(canap){  
     return    `
@@ -20,6 +19,5 @@ function buildHtml(canap){
             <h3 class="productName">${canap.name}</h3>
             <p class="productDescription">${canap.description}</p>
         </article>
-    </a> `
-    
+    </a> `   
 }

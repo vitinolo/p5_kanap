@@ -1,8 +1,6 @@
 const id = recupId();
-console.log(id)
 
-
-//chercher les data du canap
+//chercher les data du produit
 fetch("http://localhost:3000/api/products/" + id)
     .then(reponse => reponse.json())
     .then(canape =>{    
@@ -23,7 +21,17 @@ document.getElementById('addToCart').addEventListener('click', () =>{
         alert('vous devez sélectionner au moins 1 produit');
         return;
     }
+    if(localStorage.getItem('products'))
+    {
+        products = JSON.parse(localStorage.getItem('products'));
+    }else{
+        products = [];
+    }
+    
+    console.log(products)
 })
+
+
 /***************fonctions***************************/
 
 function display(canap){  
@@ -33,7 +41,7 @@ function display(canap){
     document.querySelector('#description').innerHTML = canap.description 
     canap.colors.forEach(color => {
         document.querySelector('#colors').innerHTML += `<option value="${color}">${color}</option>`    
-   });
+    });
 }    
 
 function recupId () {
@@ -42,4 +50,15 @@ function recupId () {
     return urlSearchParams.get('id');   
 } 
 
-   
+addToCart.onclick = () => {
+    const product = {
+        id : id,
+        qty : quantity.value,
+        colors : colors.value
+    }
+    localStorage.setItem("products",JSON.stringify(product));   
+    if (localStorage.getItem("products",JSON.stringify(product)) > 0 ){
+        return alert ('le produit ' + `${id} `+ ' a été ajouté au panier !');
+    }
+}
+
