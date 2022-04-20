@@ -1,13 +1,11 @@
 const id = recupId();
 
-//chercher les data du produit
 fetch("http://localhost:3000/api/products/" + id)
     .then(reponse => reponse.json())
     .then(canape =>{    
          display(canape)           
     });           
 
-//écoute des choix dans liste déroulante
 document.getElementById('addToCart').addEventListener('click', () =>{  
     const color = document.querySelector('#colors').value;
     const qty = document.querySelector("#quantity").value;
@@ -21,18 +19,45 @@ document.getElementById('addToCart').addEventListener('click', () =>{
         alert('vous devez sélectionner au moins 1 produit');
         return;
     }
-    if(localStorage.getItem('products'))
+    // verifier l'existence des produits dans le local storage
+    let productsAlreadyPresentInStorage = localStorage.getItem('products');
+    if(productsAlreadyPresentInStorage)
     {
-        products = JSON.parse(localStorage.getItem('products'));
+        let products = JSON.parse(localStorage.getItem('products'));
+        let existsAlready = products.find(el => el.id == id && el.color == color);
+        if (existsAlready)
+        {
+            // si oui => verifier que le produit selectionné (id & color) existe deja dans le local storage
+            let product = products.find(el => el.id == id && el.color == color);
+            product.qty = Number(product.qty) + Number(qty);
+            localStorage.setItem('products', JSON.stringify(products))
+            console.log(product)
+        }else{
+            // si non => ajouter le produit dans le local storage
+            let product = {
+                id : id,
+                color : color,
+                qty : qty
+            };
+            products.push(product);
+            localStorage.setItem('products',JSON.stringify(products))
+        }
+
     }else{
-        products = [];
+        // si aucun produit , ajouter le produit dans le local storage
+        let product = {
+            id : id,
+            color : color,
+            qty : qty
+        };
+       let  products = [];
+       products.push(product);
+       localStorage.setItem('products',JSON.stringify(products))
     }
     
     console.log(products)
+    
 })
-
-
-/***************fonctions***************************/
 
 function display(canap){  
     document.querySelector('.item__img').innerHTML = `<img src="${canap.imageUrl}" alt="Photographie d'un canapé"/> `
@@ -49,16 +74,4 @@ function recupId () {
     let urlSearchParams = new URLSearchParams(queryStringUrlId);
     return urlSearchParams.get('id');   
 } 
-
-addToCart.onclick = () => {
-    const product = {
-        id : id,
-        qty : quantity.value,
-        colors : colors.value
-    }
-    localStorage.setItem("products",JSON.stringify(product));   
-    if (localStorage.getItem("products",JSON.stringify(product)) > 0 ){
-        return alert ('le produit ' + `${id} `+ ' a été ajouté au panier !');
-    }
-}
 
