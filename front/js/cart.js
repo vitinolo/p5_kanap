@@ -1,44 +1,50 @@
-//rechercher si il y a quelque chose dans le local storage
-if (localStorage.getItem("products"))
-{
-    //recuperer les produits
-    fetch("http://localhost:3000/api/products/")
-    .then(reponse => reponse.json())
-    .then(products => {
-        let html = "";
-        products.forEach(product =>{
-            
-            html += buildHtml(product)
-        })
-    document.getElementById("cart__items").innerHTML = html;
-    });
+
+let id = recupId();
+let name = recupName();
+
+fetch("http://localhost:3000/api/products/")
+.then(reponse => reponse.json())
+.then(canapes => {
+    canapes.forEach(canap =>{
+        
+        return console.log(canap)      
+    })
+});
+//vérifier si il y des produits dans le localStorage
+let products = JSON.parse(localStorage.getItem('products'));
+
+
+//récupèrer les produits par l'id + la couleur + la quantité
+let product = products.find(el => el.id == id && el.color == color && el.qty == qty);
+
+
+//afficher les produits dans le panier avec l'image, le nom, la couleur, le prix et la quantité
+if (product.id === canap.id){
+    let productChosen = {
+        imageUrl : canap.imageUrl,
+        name : canap.name,
+        color : color,
+        price : price
+    };
+    
+    display(productChosen)
 }
-else
-{
-document.querySelector('h1').style.display = 'none';
-document.querySelector('.cart__price').style.display = 'none';
-document.querySelector('.cart__order').style.display = 'none'; 
-document.getElementById("cart__items").innerHTML = '<h1>votre panier est vide</h1>'
-}
 
-
-//construction du html
-
-function buildHtml(product) {
-    return  `
-    <article class="cart__item" data-id="${product.id}" data-color="${product.color}">
+function display(canap){  
+    document.querySelector('.cart__items').innerHTML = ` 
+    <article class="cart__item" data-id="${canap.id}" data-color="${color}">
         <div class="cart__item__img">
-            <img src="${product.imageUrl}" alt="Photographie d'un canapé">
+            <img src="${imageUrl}" alt="Photographie d'un canapé">
         </div>
         <div class="cart__item__content">
             <div class="cart__item__content__description">
-                <h2>${product.name}</h2>
-                <p>${product.color}</p>
-                <p>${product.price}</p>
+                <h2>${canap.name}</h2>
+                <p>${color}</p>
+                <p>${price}</p>
             </div>
             <div class="cart__item__content__settings">
                 <div class="cart__item__content__settings__quantity">
-                    <p>Qté : </p>
+                    <p>Qté : ${qty}</p>
                     <input type="number" class="itemQuantity" name="itemQuantity" min="1" max="100" value="42">
                 </div>
                 <div class="cart__item__content__settings__delete">
@@ -47,5 +53,15 @@ function buildHtml(product) {
             </div>
         </div>
     </article>`
+}    
+
+function recupId () {
+    let queryStringUrlId = window.location.search;
+    let urlSearchParams = new URLSearchParams(queryStringUrlId);
+    return urlSearchParams.get('id');   
+} 
+function recupName () {
+    let queryStringUrlName = window.location.search;
+    let urlSearchParams = new URLSearchParams(queryStringUrlName);
+    return urlSearchParams.get('name'); 
 }
- 

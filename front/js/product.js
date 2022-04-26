@@ -28,12 +28,16 @@ document.getElementById('addToCart').addEventListener('click', () =>{
         if (existsAlready)
         {
             // si oui => verifier que le produit selectionné (id & color) existe deja dans le local storage
+            alert('produit ajouté mais vous avez déjà dans le panier un produit similaire !');
             let product = products.find(el => el.id == id && el.color == color);
             product.qty = Number(product.qty) + Number(qty);
             localStorage.setItem('products', JSON.stringify(products))
             console.log(product)
-        }else{
+        }
+        else
+        {
             // si non => ajouter le produit dans le local storage
+            alert('produit ajouté dans le panier !')
             let product = {
                 id : id,
                 color : color,
@@ -42,9 +46,11 @@ document.getElementById('addToCart').addEventListener('click', () =>{
             products.push(product);
             localStorage.setItem('products',JSON.stringify(products))
         }
-
-    }else{
+    }
+    else
+    {
         // si aucun produit , ajouter le produit dans le local storage
+        alert('produit ajouté dans le panier !')
         let product = {
             id : id,
             color : color,
@@ -53,10 +59,8 @@ document.getElementById('addToCart').addEventListener('click', () =>{
        let  products = [];
        products.push(product);
        localStorage.setItem('products',JSON.stringify(products))
+       console.log(products)
     }
-    
-    console.log(products)
-    
 })
 
 function display(canap){  
