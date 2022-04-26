@@ -21,6 +21,7 @@ let product = products.find(el => el.id == id && el.color == color && el.qty == 
 //afficher les produits dans le panier avec l'image, le nom, la couleur, le prix et la quantité
 if (product.id === canap.id){
     let productChosen = {
+        id : canap.id,
         imageUrl : canap.imageUrl,
         name : canap.name,
         color : color,
