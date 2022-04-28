@@ -1,68 +1,83 @@
 
-let id = recupId();
-let name = recupName();
-
-fetch("http://localhost:3000/api/products/")
-.then(reponse => reponse.json())
-.then(canapes => {
-    canapes.forEach(canap =>{
+if (!localStorage.getItem('products'))
+{
+    document.querySelector('#ccart__items').innerHTML = "<h1>Le panier est vide</h1>"      
+} else 
+{
+    fetch("http://localhost:3000/api/products/")
+    .then(reponse => reponse.json())
+    .then(canapes => 
+    {
         
-        return console.log(canap)      
-    })
-});
-//vérifier si il y des produits dans le localStorage
-let products = JSON.parse(localStorage.getItem('products'));
+        const list = buildCompleteList(canapes)
 
+        list.forEach(canap =>
+            {
+                display(canap)
+            })
 
-//récupèrer les produits par l'id + la couleur + la quantité
-let product = products.find(el => el.id == id && el.color == color && el.qty == qty);
-
-
-//afficher les produits dans le panier avec l'image, le nom, la couleur, le prix et la quantité
-if (product.id === canap.id){
-    let productChosen = {
-        id : canap.id,
-        imageUrl : canap.imageUrl,
-        name : canap.name,
-        color : color,
-        price : price
-    };
+        list.forEach(canap =>
+            {
+                listenForQtyChange(canap)
+            })
+    });
     
-    display(productChosen)
 }
 
-function display(canap){  
-    document.querySelector('.cart__items').innerHTML = ` 
-    <article class="cart__item" data-id="${canap.id}" data-color="${color}">
-        <div class="cart__item__img">
-            <img src="${imageUrl}" alt="Photographie d'un canapé">
-        </div>
-        <div class="cart__item__content">
-            <div class="cart__item__content__description">
-                <h2>${canap.name}</h2>
-                <p>${color}</p>
-                <p>${price}</p>
-            </div>
-            <div class="cart__item__content__settings">
-                <div class="cart__item__content__settings__quantity">
-                    <p>Qté : ${qty}</p>
-                    <input type="number" class="itemQuantity" name="itemQuantity" min="1" max="100" value="42">
-                </div>
-                <div class="cart__item__content__settings__delete">
-                    <p class="deleteItem">Supprimer</p>
-                </div>
-            </div>
-        </div>
+function listenForQtyChange(canap)
+{
+    let input = document.querySelector(`article[data-id="${canap._id}-${canap.color}"] .itemQuantity`);
+    input.addEventListener('input', (e) =>
+    {
+        let newQuantity = e.target.value
+        console.log('on essaye de changer la qté');
+    })
+}
+
+function display(canap)
+{  
+    document.querySelector('#cart__items').innerHTML += ` 
+    <article class="cart__item" data-id="${canap._id}-${canap.color}">
+    <div class="cart__item__img">
+    <img src="${canap.imageUrl}" alt="Photographie d'un canapé">
+    </div>
+    <div class="cart__item__content">
+    <div class="cart__item__content__description">
+    <h2>${canap.name}</h2>
+    <p>${canap.price}</p>
+    </div>
+    <div class="cart__item__content__settings">
+    <div class="cart__item__content__settings__quantity">
+    <p>Color : ${canap.color}</p>
+    <p>Qté : ${canap.qty}</p>
+    <input type="number" class="itemQuantity" name="itemQuantity" min="1" max="100" value=${canap.qty}>
+    </div>
+    <div class="cart__item__content__settings__delete">
+    <p class="deleteItem">Supprimer</p>
+    </div>
+    </div>
+    </div>
     </article>`
 }    
 
-function recupId () {
-    let queryStringUrlId = window.location.search;
-    let urlSearchParams = new URLSearchParams(queryStringUrlId);
-    return urlSearchParams.get('id');   
-} 
-function recupName () {
-    let queryStringUrlName = window.location.search;
-    let urlSearchParams = new URLSearchParams(queryStringUrlName);
-    return urlSearchParams.get('name'); 
+function buildCompleteList(canapes)
+{
+    const list = [];
+    const products = JSON.parse(localStorage.getItem('products'));
+    products.forEach(element => 
+    {
+        const canap = canapes.find(el => el._id === element.id)
+        const canapFull = {
+            altTxt: canap.altTxt,
+            description: canap.description,
+            imageUrl: canap.imageUrl,
+            name: canap.name,
+            price: canap.price,
+            _id: canap._id,
+            qty: element.qty,
+            color: element.color
+        }
+        list.push(canapFull)       
+    });
+    return list;
 }
