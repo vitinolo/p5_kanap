@@ -28,7 +28,7 @@ document.getElementById('addToCart').addEventListener('click', () =>{
         if (existsAlready)
         {
             // si oui => verifier que le produit selectionné (id & color) existe deja dans le local storage
-            alert('produit ajouté mais vous avez déjà dans le panier un produit similaire !');
+            alert('produit ajouté dans le panier!');
             let product = products.find(el => el.id == id && el.color == color);
             product.qty = Number(product.qty) + Number(qty);
             localStorage.setItem('products', JSON.stringify(products))
@@ -45,6 +45,7 @@ document.getElementById('addToCart').addEventListener('click', () =>{
             };
             products.push(product);
             localStorage.setItem('products',JSON.stringify(products))
+            console.log(product)
         }
     }
     else

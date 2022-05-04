@@ -20,18 +20,29 @@ if (!localStorage.getItem('products'))
             {
                 listenForQtyChange(canap)
             })
-    });
-    
+    });  
 }
-
-function listenForQtyChange(canap)
+function buildCompleteList(canapes)
 {
-    let input = document.querySelector(`article[data-id="${canap._id}-${canap.color}"] .itemQuantity`);
-    input.addEventListener('input', (e) =>
-    {
-        let newQuantity = e.target.value
-        console.log('on essaye de changer la qté');
-    })
+    const list = [];
+    const products = JSON.parse(localStorage.getItem('products'));
+    products.forEach(element => 
+        {
+        const canap = canapes.find(el => el._id === element.id)
+        const canapFull = {
+            altTxt: canap.altTxt,
+            description: canap.description,
+            imageUrl: canap.imageUrl,
+            name: canap.name,
+            price: canap.price,
+            _id: canap._id,
+            qty: element.qty,
+            color: element.color
+        }
+        list.push(canapFull)
+        return console.log(canapFull);     
+    });
+    return list;
 }
 
 function display(canap)
@@ -44,7 +55,7 @@ function display(canap)
     <div class="cart__item__content">
     <div class="cart__item__content__description">
     <h2>${canap.name}</h2>
-    <p>${canap.price}</p>
+    <p>${canap.price} €</p>
     </div>
     <div class="cart__item__content__settings">
     <div class="cart__item__content__settings__quantity">
@@ -60,24 +71,52 @@ function display(canap)
     </article>`
 }    
 
-function buildCompleteList(canapes)
-{
-    const list = [];
-    const products = JSON.parse(localStorage.getItem('products'));
-    products.forEach(element => 
+function listenForQtyChange(canapFull)
+{   
+    let newList = [];
+    let input = document.querySelector(`article[data-id="${canapFull._id}-${canapFull.color}"] .itemQuantity`);
+    input.addEventListener('change', (e) =>
     {
-        const canap = canapes.find(el => el._id === element.id)
-        const canapFull = {
-            altTxt: canap.altTxt,
-            description: canap.description,
-            imageUrl: canap.imageUrl,
-            name: canap.name,
-            price: canap.price,
-            _id: canap._id,
-            qty: element.qty,
-            color: element.color
+        let newQuantity = e.target.value
+        console.log('on essaye de changer la qté');
+        if( newQuantity < 1){
+            alert ("vous devez rentrer une valeur entre 1 et 100");
+            return;      
         }
-        list.push(canapFull)       
-    });
-    return list;
+        if( newQuantity > 100){
+            alert ("vous devez rentrer une valeur entre 1 et 100");
+            return;      
+        }  
+        newList.forEach(newProduct =>
+        {
+            newProduct = {
+                _id: canapFull._id,
+                qty: newQuantity,
+                color: canapFull.color
+            }     
+            newList.push(newProduct)
+            return newList;
+            
+        })
+        console.log(newList)
+
+        if(canapFull.qty !== newQuantity)
+        {
+            localStorage.clear();  
+
+            localStorage.setItem('newProducts', JSON.stringify(newList))
+        }                
+        
+    })
 }
+/*
+function displayTotal(newList)
+{
+    let quantity = newList.find( el=> el.qty === element.qty)
+    let price = newList.find(el => el.price === element.price)
+    let totalQuantity = quantity
+    let totalPrice = price
+    document.querySelector('#totalQuantity').innerHTML=`${totalQuantity}`
+    document.querySelector('#totalPrice').innerHTML=`${totalPrice}`
+}
+*/
