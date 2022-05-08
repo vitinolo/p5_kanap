@@ -2,11 +2,13 @@ const id = recupId();
 
 fetch("http://localhost:3000/api/products/" + id)
     .then(reponse => reponse.json())
-    .then(canape =>{    
+    .then(canape =>
+        {    
          display(canape)           
-    });           
+        });           
 
-document.getElementById('addToCart').addEventListener('click', () =>{  
+document.getElementById('addToCart').addEventListener('click', () =>
+{  
     const color = document.querySelector('#colors').value;
     const qty = document.querySelector("#quantity").value;
     if (color.length === 0)
@@ -69,9 +71,10 @@ function display(canap){
     document.querySelector('#title').innerHTML = `<h1 id="title">${canap.name}</h1>`
     document.querySelector('#price').innerHTML = format(canap.price)
     document.querySelector('#description').innerHTML = canap.description 
-    canap.colors.forEach(color => {
+    canap.colors.forEach(color => 
+        {
         document.querySelector('#colors').innerHTML += `<option value="${color}">${color}</option>`    
-    });
+        });
 }    
 
 function recupId () {

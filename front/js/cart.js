@@ -174,16 +174,23 @@ function listenForCardSubmit()
     })
 }
 
-function removeCanap(canap)
+function removeCanap(canap,products)
 {   
+    let initProducts =[];
     let removeButton = document.querySelector(`article[data-id="${canap._id}-${canap.color}"] .deleteItem`);
     removeButton.addEventListener('click', () =>{
-       let products = JSON.parse(localStorage.getItem('products'));
+        
+       products = JSON.parse(localStorage.getItem('products'));
+
        let canapOnClickRemoved = document.querySelector(`article[data-id="${canap._id}-${canap.color}"]`);
        canapOnClickRemoved.remove();
+       alert ( "Ce produit a bien été supprimé du panier" ) ;
+       
        products = products - canapOnClickRemoved
-       JSON.parse(localStorage.getItem('products', products));
-       console.log("un en moins !")             
+       initProducts = JSON.parse(localStorage.getItem('products', products));
+
+       console.log("produit en moins !")             
+       location.reload();
     })
 }
 
@@ -200,4 +207,12 @@ function updateTotal(canapes)
 
     document.getElementById('totalQuantity').innerHTML = qty
     document.getElementById('totalPrice').innerHTML = format(total)
+    /*
+    total.forEach(price =>
+        {
+        price = Number(canap.price);
+        total = total - price
+        })
+    document.getElementById('totalPrice').innerHTML = format(total)  
+    */  
 }
