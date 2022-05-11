@@ -7,6 +7,7 @@ fetch("http://localhost:3000/api/products/" + id)
          display(canape)           
         });           
 
+//écoute des sélecteurs de couleur et quantité
 document.getElementById('addToCart').addEventListener('click', () =>
 {  
     const color = document.querySelector('#colors').value;
@@ -21,6 +22,7 @@ document.getElementById('addToCart').addEventListener('click', () =>
         alert('vous devez sélectionner au moins 1 produit');
         return;
     }
+
     // verifier l'existence des produits dans le local storage
     let productsAlreadyPresentInStorage = localStorage.getItem('products');
     if(productsAlreadyPresentInStorage)
@@ -59,14 +61,16 @@ document.getElementById('addToCart').addEventListener('click', () =>
             color : color,
             qty : qty
         };
-       let  products = [];
-       products.push(product);
-       localStorage.setItem('products',JSON.stringify(products))
-       console.log(products)
+        let  products = [];
+        products.push(product);
+        localStorage.setItem('products',JSON.stringify(products))
+        console.log(products)
     }
 })
 
-function display(canap){  
+//affichage du canapé
+function display(canap){ 
+    document.querySelector('title') .innerHTML = `${canap.name}`
     document.querySelector('.item__img').innerHTML = `<img src="${canap.imageUrl}" alt="Photographie d'un canapé"/> `
     document.querySelector('#title').innerHTML = `<h1 id="title">${canap.name}</h1>`
     document.querySelector('#price').innerHTML = format(canap.price)
@@ -77,6 +81,7 @@ function display(canap){
         });
 }    
 
+//récupèrer id
 function recupId () {
     let queryStringUrlId = window.location.search;
     let urlSearchParams = new URLSearchParams(queryStringUrlId);

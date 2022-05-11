@@ -1,3 +1,4 @@
+//format prix
 function format(price)
 {
     var formatter = new Intl.NumberFormat('fr-FR', {
