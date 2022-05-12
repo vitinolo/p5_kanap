@@ -119,11 +119,11 @@ function listenForFormChange()
         } 
         else
         {
-            let firstNameValided = document.getElementById('firstNameErrorMsg').innerText = '';
-            console.log(firstNameValided); 
+             document.getElementById('firstNameErrorMsg').innerText = ''; 
         }
     })
 
+    //écouter champ nom
     const lastNameInput = document.getElementById('lastName');
     lastNameInput.addEventListener('input', (e) =>
     {
@@ -139,6 +139,7 @@ function listenForFormChange()
         }
     })
     
+    //écouter champ adresse
     const addressInput = document.getElementById('address');
     addressInput.addEventListener('input', (e) =>
     {
@@ -154,6 +155,7 @@ function listenForFormChange()
         }
     })
 
+    //écouter champ city
     const cityInput = document.getElementById('city');
     cityInput.addEventListener('input', (e) =>
     {
@@ -169,6 +171,7 @@ function listenForFormChange()
         }
     })
 
+    //écouter champ email
     const emailInput = document.getElementById('email');
     emailInput.addEventListener('input', (e) =>
     {
@@ -230,39 +233,81 @@ function validateEmail (email)
 
 function listenFormSubmit()
 {
+    //écoute du bouton commander
     document.getElementById('order').addEventListener('click', (e) =>
     {
-        e.preventDefault();
-        
-        const products = JSON.parse(localStorage.getItem('products'));
-        let productIds = [];
+        let formValided = document.querySelector('.cart__order__form');
 
-        products.forEach(product =>
+        //écoute  si formulaire est valide avant soumission
+        formValided.addEventListener('submit', function(e)
+        {
+            let inputFirstName = document.getElementById('firstName');
+            let inputLastName = document.getElementById('lastName');
+            let inputAddress = document.getElementById('address');
+            let inputCity = document.getElementById('city');
+            let inputEmail = document.getElementById('email');
+
+            if(inputFirstName.value = '')
             {
-                productIds.push(product.id)
-            })
+                e.preventDefault();
+            }
+            if(inputLastName.value = '')
+            {
+                e.preventDefault();
+            }
+            if(inputAddress.value = '')
+            {
+                e.preventDefault();
+            }
+            if(inputCity.value = '')
+            {
+                e.preventDefault();
+            }
+            if(inputEmail.value = '')
+            {
+                e.preventDefault();
+            }
+            else
+            {
+                e.preventDefault();
 
-        let payload = {
-            contact: {
-                firstName: document.getElementById('firstName').value,
-                lastName: document.getElementById('lastName').value,
-                address: document.getElementById('address').value,
-                city: document.getElementById('city').value,
-                email: document.getElementById('email').value
-            },
-            products: productIds
-        }
-        console.log(payload)
+                //récupèration des id
+                const products = JSON.parse(localStorage.getItem('products'));
+                let productIds = [];
         
-        fetch("http://localhost:3000/api/products/order", {
-            method:  'POST' ,
-            headers: {
-                'accept': 'application/json',
-                'content-type': 'application/json'
-            },
-            body: JSON.stringify(payload) 
-        })
-            .then(reponse => reponse.json())
-            .then(data =>{ console.log(data) })        
+                products.forEach(product =>
+                    {
+                        productIds.push(product.id)
+                    })
+                
+                //préparation du payload
+                let payload = {
+                    contact: {
+                        firstName: document.getElementById('firstName').value,
+                        lastName: document.getElementById('lastName').value,
+                        address: document.getElementById('address').value,
+                        city: document.getElementById('city').value,
+                        email: document.getElementById('email').value
+                    },
+                    products: productIds
+                }
+                console.log(payload)
+                
+                //envoi des informations au serveur
+                fetch("http://localhost:3000/api/products/order", {
+                    method:  'POST' ,
+                    headers: {
+                        'accept': 'application/json',
+                        'content-type': 'application/json'
+                    },
+                    body: JSON.stringify(payload) 
+                })
+                    .then(reponse => reponse.json())
+                    .then(data =>{ console.log(data) })        
+            }
+        });
     })
 }
+
+
+
