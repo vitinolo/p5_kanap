@@ -247,23 +247,23 @@ function listenFormSubmit()
             let inputCity = document.getElementById('city');
             let inputEmail = document.getElementById('email');
 
-            if(inputFirstName.value = '')
+            if(inputFirstName.value.length < 2)
             {
                 e.preventDefault();
             }
-            if(inputLastName.value = '')
+            if(inputLastName.value.length < 2)
             {
                 e.preventDefault();
             }
-            if(inputAddress.value = '')
+            if(inputAddress.value.length < 6)
             {
                 e.preventDefault();
             }
-            if(inputCity.value = '')
+            if(inputCity.value.length < 3)
             {
                 e.preventDefault();
             }
-            if(inputEmail.value = '')
+            if(validateEmail(inputEmail.value))
             {
                 e.preventDefault();
             }
@@ -291,8 +291,9 @@ function listenFormSubmit()
                     },
                     products: productIds
                 }
-                console.log(payload)
-                
+
+                localStorage.setItem('payload', JSON.stringify(payload))
+
                 //envoi des informations au serveur
                 fetch("http://localhost:3000/api/products/order", {
                     method:  'POST' ,
@@ -302,9 +303,14 @@ function listenFormSubmit()
                     },
                     body: JSON.stringify(payload) 
                 })
-                    .then(reponse => reponse.json())
-                    .then(data =>{ console.log(data) })        
+                .then(reponse => reponse.json())
+                .then(data => 
+                {    
+                    console.log(data.orderId);
+                    document.getElementById('orderNumber').innerHTML = `${data.orderId}`                          
+                })        
             }
+                //window.location.href = "order.html"
         });
     })
 }
