@@ -77,12 +77,13 @@ function display(canap){
     document.querySelector('#description').innerHTML = canap.description 
     canap.colors.forEach(color => 
         {
-        document.querySelector('#colors').innerHTML += `<option value="${color}">${color}</option>`    
+            document.querySelector('#colors').innerHTML += `<option value="${color}">${color}</option>`    
         });
 }    
 
 //récupèrer id
-function recupId () {
+function recupId () 
+{
     let queryStringUrlId = window.location.search;
     let urlSearchParams = new URLSearchParams(queryStringUrlId);
     return urlSearchParams.get('id');   
