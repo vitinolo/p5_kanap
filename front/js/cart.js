@@ -130,6 +130,24 @@ function isLastNameValid()
     return true;
 }
 
+function listenForDeletion(canap)
+{   
+    let removeButton = document.querySelector(`article[data-id="${canap._id}-${canap.color}"] .deleteItem`);
+    
+    //écoute du bouton supprimer
+    removeButton.addEventListener('click', () =>{
+        
+        products = JSON.parse(localStorage.getItem('products'));
+        const canapIndex = products.findIndex(item => item.id === canap._id && item.color === canap.color)
+        
+        products.splice(canapIndex, 1);
+        
+        localStorage.setItem('products', JSON.stringify(products))
+        alert ( "Ce produit va être supprimé du panier" ) ;
+        location.reload();                       
+    })
+}
+
 function listenForFormChange() 
 {   
     //écouter champ prénom 
@@ -175,24 +193,6 @@ function listenForFormChange()
         {
             document.getElementById('emailErrorMsg').innerText = 'Merci de bien remplir le champ email';
         }  
-    })
-}
-
-function listenForDeletion(canap)
-{   
-    let removeButton = document.querySelector(`article[data-id="${canap._id}-${canap.color}"] .deleteItem`);
-    
-    //écoute du bouton supprimer
-    removeButton.addEventListener('click', () =>{
-        
-        products = JSON.parse(localStorage.getItem('products'));
-        const canapIndex = products.findIndex(item => item.id === canap._id && item.color === canap.color)
-        
-        products.splice(canapIndex, 1);
-        
-        localStorage.setItem('products', JSON.stringify(products))
-        alert ( "Ce produit va être supprimé du panier" ) ;
-        location.reload();                       
     })
 }
 
