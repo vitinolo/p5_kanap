@@ -79,7 +79,7 @@ function display(canap){
         {
             document.querySelector('#colors').innerHTML += `<option value="${color}">${color}</option>`    
         });
-}    
+} 
 
 //récupèrer id
 function recupId () 
