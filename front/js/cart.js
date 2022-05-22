@@ -281,19 +281,6 @@ function updateTotal(canapes)
 
     document.getElementById('totalQuantity').innerHTML = qty
     document.getElementById('totalPrice').innerHTML = format(total)
-    document.querySelector('.menu').innerHTML = `<div class="limitedWidthBlockContainer menu">
-    <div class="limitedWidthBlock">
-      <a href="./index.html">
-        <img class="logo" src="../images/logo.png" alt="Logo de l'entreprise">
-      </a>
-      <nav>
-        <ul>
-          <a href="./index.html"><li>Accueil</li></a>
-          <a href="./cart.html"><li>Panier ${qty}</li></a>
-        </ul>
-      </nav>
-    </div>
-  </div>`
 }
 
 function validateAddress(value)

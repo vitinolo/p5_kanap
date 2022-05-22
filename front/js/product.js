@@ -36,6 +36,7 @@ document.getElementById('addToCart').addEventListener('click', () =>
             let product = products.find(el => el.id == id && el.color == color);
             product.qty = Number(product.qty) + Number(qty);
             localStorage.setItem('products', JSON.stringify(products))
+            displayNumberInCart(product.qty)
             console.log(product)
         }
         else
@@ -49,6 +50,7 @@ document.getElementById('addToCart').addEventListener('click', () =>
             };
             products.push(product);
             localStorage.setItem('products',JSON.stringify(products))
+            displayNumberInCart(product.qty)
             console.log(product)
         }
     }
@@ -64,6 +66,7 @@ document.getElementById('addToCart').addEventListener('click', () =>
         let  products = [];
         products.push(product);
         localStorage.setItem('products',JSON.stringify(products))
+        displayNumberInCart(product.qty)
         console.log(products)
     }
 })
@@ -80,6 +83,24 @@ function display(canap){
             document.querySelector('#colors').innerHTML += `<option value="${color}">${color}</option>`    
         });
 } 
+
+//affichage du nombre de produit dans panier
+function displayNumberInCart(qty)
+{
+    document.querySelector('.menu').innerHTML = `<div class="limitedWidthBlockContainer menu">
+    <div class="limitedWidthBlock">
+      <a href="./index.html">
+        <img class="logo" src="../images/logo.png" alt="Logo de l'entreprise">
+      </a>
+      <nav>
+        <ul>
+          <a href="./index.html"><li>Accueil</li></a>
+          <a href="./cart.html"><li>Panier ${qty}</li></a>
+        </ul>
+      </nav>
+    </div>
+  </div>`
+}
 
 //récupèrer id
 function recupId () 
