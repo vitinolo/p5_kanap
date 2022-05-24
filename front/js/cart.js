@@ -263,7 +263,7 @@ function listenFormSubmit()
         .then(data => 
         {    
             localStorage.clear();
-            window.location.href = `order.html?order_id=${data.orderId}`
+            window.location.href = `confirmation.html?order_id=${data.orderId}`
         })           
     });
 }
