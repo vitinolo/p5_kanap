@@ -24,48 +24,42 @@ document.getElementById('addToCart').addEventListener('click', () =>
     }
 
     // verifier l'existence des produits dans le local storage
+    let  products = [];
     let productsAlreadyPresentInStorage = localStorage.getItem('products');
     if(productsAlreadyPresentInStorage)
     {
-        let products = JSON.parse(localStorage.getItem('products'));
+        products = JSON.parse(localStorage.getItem('products'));
         let existsAlready = products.find(el => el.id == id && el.color == color);
         if (existsAlready)
         {
             // si oui => verifier que le produit selectionné (id & color) existe deja dans le local storage
-            alert('produit ajouté dans le panier!');
             let product = products.find(el => el.id == id && el.color == color);
             product.qty = Number(product.qty) + Number(qty);
-            localStorage.setItem('products', JSON.stringify(products))
-            console.log(product)
         }
         else
         {
             // si non => ajouter le produit dans le local storage
-            alert('produit ajouté dans le panier !')
             let product = {
                 id : id,
                 color : color,
                 qty : qty
             };
             products.push(product);
-            localStorage.setItem('products',JSON.stringify(products))
-            console.log(product)
         }
     }
     else
     {
         // si aucun produit , ajouter le produit dans le local storage
-        alert('produit ajouté dans le panier !')
         let product = {
             id : id,
             color : color,
             qty : qty
         };
-        let  products = [];
         products.push(product);
-        localStorage.setItem('products',JSON.stringify(products))
-        console.log(products)
     }
+    localStorage.setItem('products', JSON.stringify(products))
+    alert('Votre produit à bien été ajouté, nous vous redirigerons vers la page accueil ')
+    window.location.href ="http://127.0.0.1:5500/front/html/";
 })
 
 //affichage du canapé

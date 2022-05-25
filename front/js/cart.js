@@ -1,8 +1,10 @@
 //si panier vide
 if (!localStorage.getItem('products'))
-{
-    document.querySelector('#cart__items').innerHTML = "<h1>Le panier est vide</h1>" 
-    
+{   
+    document.querySelector('#cart__items').innerHTML = `<h1>Le panier est vide</h1>`
+    document.querySelector('.cart__price').remove();
+    document.querySelector('.cart__order').remove();
+    document.querySelector('h1').remove(); 
 } 
 else 
 {
@@ -22,7 +24,7 @@ else
         list.forEach(canap => { listenForDeletion(canap) });
         
         //rafraîchir le total
-        updateTotal(list);
+        calcTotal(list);
 
         //écoute des champs formulaire
         listenForFormChange();
@@ -83,7 +85,7 @@ function display(canap)
 function isAddressValid()
 {
     const address = document.getElementById('address').value;
-    if(address.length < 6 || !validateAddress(address))
+    if(!validateAddress(address))
     {
         return false
     }
@@ -93,7 +95,7 @@ function isAddressValid()
 function isCityValid()
 {
     const city = document.getElementById('city').value;
-    if(city.length < 3 || !validateCity(city))
+    if(!validateCity(city))
     {
         return false
     }
@@ -144,54 +146,64 @@ function listenForDeletion(canap)
         
         localStorage.setItem('products', JSON.stringify(products))
         alert ( "Ce produit va être supprimé du panier" ) ;
-        location.reload();                       
+        document.querySelector('.cart__item').remove() ;             
     })
+}
+
+function showError(id,text)
+{
+    document.getElementById(id).innerText = text;   
+}
+
+function hideError(id)
+{
+    document.getElementById(id).innerText = ''; 
 }
 
 function listenForFormChange() 
 {   
     //écouter champ prénom 
     document.getElementById('firstName').addEventListener('input', () => {
-        document.getElementById('firstNameErrorMsg').innerText = ''; 
+        hideError('firstNameErrorMsg'); 
         if (!isFirstNameValid())
         {
-            document.getElementById('firstNameErrorMsg').innerText = 'Merci de bien remplir le champ prénom';   
+            showError('firstNameErrorMsg', 'Merci de bien remplir le champ prénom');   
         }
     })
     
     //écouter champ nom
     document.getElementById('lastName').addEventListener('input', () => {
-        document.getElementById('lastNameErrorMsg').innerText = '';  
+        hideError('lastNameErrorMsg');  
         if (!isLastNameValid())
         {
-            document.getElementById('lastNameErrorMsg').innerText = 'Merci de bien remplir le champ nom';
+            showError('lastNameErrorMsg', 'Merci de bien remplir le champ nom');
         } 
     })
     
     //écouter champ adresse
     document.getElementById('address').addEventListener('input', () => {
-        document.getElementById('addressErrorMsg').innerText = '';  
+        hideError('addressErrorMsg');  
         if (!isAddressValid())
         {
-            document.getElementById('addressErrorMsg').innerText = 'Merci de bien remplir le champ adresse';
+            showError('addressErrorMsg', 'Merci de bien remplir le champ adresse');
         }  
     })
     
     //écouter champ city
     document.getElementById('city').addEventListener('input', () => {
-        document.getElementById('cityErrorMsg').innerText = '';  
+        hideError('cityErrorMsg');  
         if (!isCityValid())
         {
-            document.getElementById('cityErrorMsg').innerText = 'Merci de bien remplir le champ ville';
+            showError('cityErrorMsg', 'Merci de bien remplir le champ ville');
         }  
     })
     
     //écouter champ email
     document.getElementById('email').addEventListener('input', () => { 
-        document.getElementById('emailErrorMsg').innerText = '';  
+        hideError('emailErrorMsg');  
         if (!isEmailValid()) 
         {
-            document.getElementById('emailErrorMsg').innerText = 'Merci de bien remplir le champ email';
+            showError('emailErrorMsg', 'Merci de bien remplir le champ email');
         }  
     })
 }
@@ -227,11 +239,42 @@ function listenFormSubmit()
     document.getElementById('order').addEventListener('click', (e) =>
     {  
         e.preventDefault();
-        
-        if(!isFirstNameValid() || !isLastNameValid() || !isCityValid() || !isAddressValid() || !isEmailValid())
+ 
+        hideError('firstNameErrorMsg'); 
+        hideError('lastNameErrorMsg');  
+        hideError('addressErrorMsg');  
+        hideError('cityErrorMsg');  
+        hideError('emailErrorMsg'); 
+
+        if (!isFirstNameValid())
         {
-            return;
+            showError('firstNameErrorMsg', 'Merci de bien remplir le champ prénom');
+            return;   
         }
+    
+        if (!isLastNameValid())
+        {
+            showError('lastNameErrorMsg', 'Merci de bien remplir le champ nom');
+            return;
+        } 
+    
+        if (!isAddressValid())
+        {
+            showError('addressErrorMsg', 'Merci de bien remplir le champ adresse');
+            return;
+        }  
+    
+        if (!isCityValid())
+        {
+            showError('cityErrorMsg', 'Merci de bien remplir le champ ville');
+            return;
+        }  
+    
+        if (!isEmailValid()) 
+        {
+            showError('emailErrorMsg', 'Merci de bien remplir le champ email');
+            return;
+        }  
 
         //récupèration des id
         const products = JSON.parse(localStorage.getItem('products'));
@@ -268,7 +311,7 @@ function listenFormSubmit()
     });
 }
 
-function updateTotal(canapes)
+function calcTotal(canapes)
 {
     let qty = 0;
     let total = 0;
@@ -288,8 +331,7 @@ function validateAddress(value)
     return String(value)
     .toLowerCase()
     .match(
-        /^[a-zA-Z0-9\s,'-]*$/
-    );
+        /^[a-zA-Z0-9\s,'-]*$/) && value.length >= 6;
 }
 
 function validateCity(value)
@@ -297,8 +339,7 @@ function validateCity(value)
     return String(value)
     .toLowerCase()
     .match(
-    /^[a-zA-Z]+(?:[\s-][a-zA-Z]+)*$/
-    );
+    /^[a-zA-Z]+(?:[\s-][a-zA-Z]+)*$/) && value.length >= 2;
 }
 
 function validateNoun(value)
