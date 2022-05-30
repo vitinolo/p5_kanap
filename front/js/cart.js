@@ -56,31 +56,51 @@ function buildCompleteList(canapes)
     return list;
 }
 
+function calcTotal(canapes)
+{
+    let qty = 0;
+    let total = 0;
+    
+    canapes.forEach(canap =>
+        {
+            qty = qty + Number(canap.qty);
+            total = total + (Number(canap.price) * canap.qty);
+        })
+        
+        document.getElementById('totalQuantity').innerHTML = qty
+        document.getElementById('totalPrice').innerHTML = format(total)
+}
+
 function display(canap)
 {  
     document.querySelector('#cart__items').innerHTML += ` 
     <article class="cart__item" data-id="${canap._id}-${canap.color}">
-        <div class="cart__item__img">
-            <img src="${canap.imageUrl}" alt="Photographie d'un canapé">
-        </div>
-        <div class="cart__item__content">
-            <div class="cart__item__content__description">
-                <h2>${canap.name}</h2>
-                <p>${format(canap.price)}</p>
-            </div>
-            <div class="cart__item__content__settings">
-                <div class="cart__item__content__settings__quantity">
-                    <p>Color : ${canap.color}</p>
-                    <p>Qté : ${canap.qty}</p>
-                    <input type="number" class="itemQuantity" name="itemQuantity" min="1" max="100" value=${canap.qty}>
-                </div>
-                <div class="cart__item__content__settings__delete">
-                    <p class="deleteItem">Supprimer</p>
-                </div>
-            </div>
-        </div>
+    <div class="cart__item__img">
+    <img src="${canap.imageUrl}" alt="Photographie d'un canapé">
+    </div>
+    <div class="cart__item__content">
+    <div class="cart__item__content__description">
+    <h2>${canap.name}</h2>
+    <p>${format(canap.price)}</p>
+    </div>
+    <div class="cart__item__content__settings">
+    <div class="cart__item__content__settings__quantity">
+    <p>Color : ${canap.color}</p>
+    <p>Qté : ${canap.qty}</p>
+    <input type="number" class="itemQuantity" name="itemQuantity" min="1" max="100" value=${canap.qty}>
+    </div>
+    <div class="cart__item__content__settings__delete">
+    <p class="deleteItem">Supprimer</p>
+    </div>
+    </div>
+    </div>
     </article>`
-}    
+} 
+
+function hideError(id)
+{
+    document.getElementById(id).innerText = ''; 
+}
 
 function isAddressValid()
 {
@@ -144,20 +164,17 @@ function listenForDeletion(canap)
         
         products.splice(canapIndex, 1);
         
-        localStorage.setItem('products', JSON.stringify(products))
         alert ( "Ce produit va être supprimé du panier" ) ;
-        document.querySelector('.cart__item').remove() ;             
+        document.querySelector('.cart__item').remove() ;
+        localStorage.setItem('products', JSON.stringify(products))
+        if (localStorage.getItem('products', []))
+        {   
+            document.querySelector('#cart__items').innerHTML = `<h1>Le panier est vide</h1>`
+            document.querySelector('.cart__price').remove();
+            document.querySelector('.cart__order').remove();
+            document.querySelector('h1').remove(); 
+        }    
     })
-}
-
-function showError(id,text)
-{
-    document.getElementById(id).innerText = text;   
-}
-
-function hideError(id)
-{
-    document.getElementById(id).innerText = ''; 
 }
 
 function listenForFormChange() 
@@ -208,74 +225,49 @@ function listenForFormChange()
     })
 }
 
-function listenForQtyChange(canap)
-{   
-    let input = document.querySelector(`article[data-id="${canap._id}-${canap.color}"] .itemQuantity`);
-    input.addEventListener('change', (e) =>
-    {
-        let qty = e.target.value
-
-        if( qty < 1){
-            alert ("vous devez rentrer une valeur entre 1 et 100");
-            return;      
-        }
-        
-        if( qty > 100){
-            alert ("vous devez rentrer une valeur entre 1 et 100");
-            return;      
-        } 
-        const products = JSON.parse(localStorage.getItem('products'));
-        const canapInStorage = products.find(item => item.id === canap._id && item.color === canap.color)
-        canapInStorage.qty = qty;
-        
-        localStorage.setItem('products', JSON.stringify(products))
-        location.reload();       
-    })
-}
-
 function listenFormSubmit()
 {
     //écoute du bouton commander
     document.getElementById('order').addEventListener('click', (e) =>
     {  
         e.preventDefault();
- 
+        
         hideError('firstNameErrorMsg'); 
         hideError('lastNameErrorMsg');  
         hideError('addressErrorMsg');  
         hideError('cityErrorMsg');  
         hideError('emailErrorMsg'); 
-
+        
         if (!isFirstNameValid())
         {
             showError('firstNameErrorMsg', 'Merci de bien remplir le champ prénom');
             return;   
         }
-    
+        
         if (!isLastNameValid())
         {
             showError('lastNameErrorMsg', 'Merci de bien remplir le champ nom');
             return;
         } 
-    
+        
         if (!isAddressValid())
         {
             showError('addressErrorMsg', 'Merci de bien remplir le champ adresse');
             return;
         }  
-    
+        
         if (!isCityValid())
         {
             showError('cityErrorMsg', 'Merci de bien remplir le champ ville');
             return;
         }  
-    
+        
         if (!isEmailValid()) 
         {
             showError('emailErrorMsg', 'Merci de bien remplir le champ email');
             return;
         }  
-
+        
         //récupèration des id
         const products = JSON.parse(localStorage.getItem('products'));
         let productIds = [];
@@ -311,27 +303,42 @@ function listenFormSubmit()
     });
 }
 
-function calcTotal(canapes)
-{
-    let qty = 0;
-    let total = 0;
-
-    canapes.forEach(canap =>
-        {
-        qty = qty + Number(canap.qty);
-        total = total + (Number(canap.price) * canap.qty);
-        })
-
-    document.getElementById('totalQuantity').innerHTML = qty
-    document.getElementById('totalPrice').innerHTML = format(total)
+function listenForQtyChange(canap)
+{   
+    let input = document.querySelector(`article[data-id="${canap._id}-${canap.color}"] .itemQuantity`);
+    input.addEventListener('change', (e) =>
+    {
+        let qty = e.target.value
+        
+        if( qty < 1){
+            alert ("vous devez rentrer une valeur entre 1 et 100");
+            return;      
+        }
+        
+        if( qty > 100){
+            alert ("vous devez rentrer une valeur entre 1 et 100");
+            return;      
+        } 
+        const products = JSON.parse(localStorage.getItem('products'));
+        const canapInStorage = products.find(item => item.id === canap._id && item.color === canap.color)
+        canapInStorage.qty = qty;
+        
+        localStorage.setItem('products', JSON.stringify(products))
+        location.reload();       
+    })
 }
-
+    
+function showError(id,text)
+{
+    document.getElementById(id).innerText = text;   
+}
+        
 function validateAddress(value)
 {
     return String(value)
     .toLowerCase()
     .match(
-        /^[a-zA-Z0-9\s,'-]*$/) && value.length >= 6;
+    /^[a-zA-Z0-9\s,'-]*$/) && value.length >= 6;
 }
 
 function validateCity(value)
@@ -350,8 +357,6 @@ function validateNoun(value)
     /^[A-Za-z\5\-]+$/
     );
 }
-
-
 
 
 
