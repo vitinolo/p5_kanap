@@ -166,15 +166,17 @@ function listenForDeletion(canap)
         
         alert ( "Ce produit va être supprimé du panier" ) ;
         document.querySelector('.cart__item').remove() ;
+
+        if (products.length ===0)
+        {
+            localStorage.clear();
+        }
+        else
+        {
+            localStorage.setItem('products', JSON.stringify(products))
+        }
+        
         location.reload();
-        localStorage.setItem('products', JSON.stringify(products))
-        if (localStorage.getItem("products" , []))
-        {   
-            document.querySelector('#cart__items').innerHTML = `<h1>Le panier est vide</h1>`
-            document.querySelector('.cart__price').remove();
-            document.querySelector('.cart__order').remove();
-            document.querySelector('h1').remove(); 
-        } 
     })
 }
 

@@ -65,10 +65,12 @@ document.getElementById('addToCart').addEventListener('click', () =>
 //affichage du canapé
 function display(canap)
 { 
+    document.querySelector('title').innerHTML = canap.name
     document.querySelector('.item__img').innerHTML = `<img src="${canap.imageUrl}" alt="Photographie d'un canapé"/> `
     document.querySelector('#title').innerHTML = `<h1 id="title">${canap.name}</h1>`
     document.querySelector('#price').innerHTML = format(canap.price)
     document.querySelector('#description').innerHTML = canap.description 
+    
     canap.colors.forEach(color => 
         {
             document.querySelector('#colors').innerHTML += `<option value="${color}">${color}</option>`    
