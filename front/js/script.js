@@ -1,15 +1,18 @@
 
 //récupération des données du serveur et placement des données dans la page index 
 fetch("http://localhost:3000/api/products/")
-.then(reponse => reponse.json())
-.then(canapes => 
+    .then(reponse => reponse.json())
+    .then(canapes => 
     {
-    let html = "";
-    canapes.forEach(canap =>{
-        html += buildHtml(canap)
-    })
-document.getElementById("items").innerHTML = html;
-});
+        let html = "";
+        
+        canapes.forEach(canap =>
+        {
+            html += buildHtml(canap)
+        })
+
+        document.getElementById("items").innerHTML = html;
+    });
 
 //construction du html
 function buildHtml(canap)

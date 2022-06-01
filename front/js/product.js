@@ -3,15 +3,16 @@ const id = recupId();
 fetch("http://localhost:3000/api/products/" + id)
     .then(reponse => reponse.json())
     .then(canape =>
-        {    
-         display(canape)           
-        });           
+    {    
+        display(canape)           
+    });           
 
 //écoute des sélecteurs de couleur et quantité
 document.getElementById('addToCart').addEventListener('click', () =>
 {  
     const color = document.querySelector('#colors').value;
     const qty = document.querySelector("#quantity").value;
+
     if (color.length === 0)
     {
         alert('attention, vous devez choisir impérativement une couleur !');
@@ -26,6 +27,7 @@ document.getElementById('addToCart').addEventListener('click', () =>
     // verifier l'existence des produits dans le local storage
     let  products = [];
     let productsAlreadyPresentInStorage = localStorage.getItem('products');
+    
     if(productsAlreadyPresentInStorage)
     {
         products = JSON.parse(localStorage.getItem('products'));

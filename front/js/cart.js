@@ -9,35 +9,36 @@ if (!localStorage.getItem('products'))
 else 
 {
     fetch("http://localhost:3000/api/products/")
-    .then(reponse => reponse.json())
-    .then(canapes => 
-    {   
-        const list = buildCompleteList(canapes);
+        .then(reponse => reponse.json())
+        .then(canapes => 
+        {   
+            const list = buildCompleteList(canapes);
 
-        //afficher les canapés
-        list.forEach(canap =>{ display(canap) });
+            //afficher les canapés
+            list.forEach(canap =>{ display(canap) });
 
-        //écouter les chgts
-        list.forEach(canap =>{ listenForQtyChange(canap) });
+            //écouter les chgts
+            list.forEach(canap =>{ listenForQtyChange(canap) });
 
-        //supprimer canapé
-        list.forEach(canap => { listenForDeletion(canap) });
-        
-        //rafraîchir le total
-        calcTotal(list);
+            //supprimer canapé
+            list.forEach(canap => { listenForDeletion(canap) });
+            
+            //rafraîchir le total
+            calcTotal(list);
 
-        //écoute des champs formulaire
-        listenForFormChange();
+            //écoute des champs formulaire
+            listenForFormChange();
 
-        //écoute la soumission du formulaire
-        listenFormSubmit();
-    });  
+            //écoute la soumission du formulaire
+            listenFormSubmit();
+        });  
 }
 
 function buildCompleteList(canapes)
 {
     const list = [];
     const products = JSON.parse(localStorage.getItem('products'));
+
     products.forEach(element => 
     {
         const canap = canapes.find(el => el._id === element.id)
@@ -67,33 +68,33 @@ function calcTotal(canapes)
             total = total + (Number(canap.price) * canap.qty);
         })
         
-        document.getElementById('totalQuantity').innerHTML = qty
-        document.getElementById('totalPrice').innerHTML = format(total)
+    document.getElementById('totalQuantity').innerHTML = qty
+    document.getElementById('totalPrice').innerHTML = format(total)
 }
 
 function display(canap)
 {  
     document.querySelector('#cart__items').innerHTML += ` 
     <article class="cart__item" data-id="${canap._id}-${canap.color}">
-    <div class="cart__item__img">
-    <img src="${canap.imageUrl}" alt="Photographie d'un canapé">
-    </div>
-    <div class="cart__item__content">
-    <div class="cart__item__content__description">
-    <h2>${canap.name}</h2>
-    <p>${format(canap.price)}</p>
-    </div>
-    <div class="cart__item__content__settings">
-    <div class="cart__item__content__settings__quantity">
-    <p>Color : ${canap.color}</p>
-    <p>Qté : ${canap.qty}</p>
-    <input type="number" class="itemQuantity" name="itemQuantity" min="1" max="100" value=${canap.qty}>
-    </div>
-    <div class="cart__item__content__settings__delete">
-    <p class="deleteItem">Supprimer</p>
-    </div>
-    </div>
-    </div>
+        <div class="cart__item__img">
+            <img src="${canap.imageUrl}" alt="Photographie d'un canapé">
+        </div>
+        <div class="cart__item__content">
+            <div class="cart__item__content__description">
+                <h2>${canap.name}</h2>
+                <p>${format(canap.price)}</p>
+            </div>
+            <div class="cart__item__content__settings">
+                <div class="cart__item__content__settings__quantity">
+                     <p>Color : ${canap.color}</p>
+                    <p>Qté : ${canap.qty}</p>
+                    <input type="number" class="itemQuantity" name="itemQuantity" min="1" max="100" value=${canap.qty}>
+                </div>
+                <div class="cart__item__content__settings__delete">
+                    <p class="deleteItem">Supprimer</p>
+                </div>
+            </div>
+        </div>
     </article>`
 } 
 
@@ -105,6 +106,7 @@ function hideError(id)
 function isAddressValid()
 {
     const address = document.getElementById('address').value;
+
     if(!validateAddress(address))
     {
         return false
@@ -115,6 +117,7 @@ function isAddressValid()
 function isCityValid()
 {
     const city = document.getElementById('city').value;
+
     if(!validateCity(city))
     {
         return false
@@ -125,6 +128,7 @@ function isCityValid()
 function isEmailValid()
 {
     const email = document.getElementById('email').value;
+
     return String(email)
     .toLowerCase()
     .match(
@@ -135,6 +139,7 @@ function isEmailValid()
 function isFirstNameValid()
 {
     const firstName = document.getElementById('firstName').value;
+
     if(firstName.length < 2 || !validateNoun(firstName))
     {
         return false
@@ -145,6 +150,7 @@ function isFirstNameValid()
 function isLastNameValid()
 {
     const lastName = document.getElementById('lastName').value;
+
     if(lastName.length < 2 || !validateNoun(lastName))
     {
         return false
@@ -157,8 +163,8 @@ function listenForDeletion(canap)
     let removeButton = document.querySelector(`article[data-id="${canap._id}-${canap.color}"] .deleteItem`);
     
     //écoute du bouton supprimer
-    removeButton.addEventListener('click', () =>{
-        
+    removeButton.addEventListener('click', () =>
+    {
         products = JSON.parse(localStorage.getItem('products'));
         const canapIndex = products.findIndex(item => item.id === canap._id && item.color === canap.color)
         
@@ -183,7 +189,8 @@ function listenForDeletion(canap)
 function listenForFormChange() 
 {   
     //écouter champ prénom 
-    document.getElementById('firstName').addEventListener('input', () => {
+    document.getElementById('firstName').addEventListener('input', () => 
+    {
         hideError('firstNameErrorMsg'); 
         if (!isFirstNameValid())
         {
@@ -192,7 +199,8 @@ function listenForFormChange()
     })
     
     //écouter champ nom
-    document.getElementById('lastName').addEventListener('input', () => {
+    document.getElementById('lastName').addEventListener('input', () => 
+    {
         hideError('lastNameErrorMsg');  
         if (!isLastNameValid())
         {
@@ -201,7 +209,8 @@ function listenForFormChange()
     })
     
     //écouter champ adresse
-    document.getElementById('address').addEventListener('input', () => {
+    document.getElementById('address').addEventListener('input', () => 
+    {
         hideError('addressErrorMsg');  
         if (!isAddressValid())
         {
@@ -210,7 +219,8 @@ function listenForFormChange()
     })
     
     //écouter champ city
-    document.getElementById('city').addEventListener('input', () => {
+    document.getElementById('city').addEventListener('input', () => 
+    {
         hideError('cityErrorMsg');  
         if (!isCityValid())
         {
@@ -219,7 +229,8 @@ function listenForFormChange()
     })
     
     //écouter champ email
-    document.getElementById('email').addEventListener('input', () => { 
+    document.getElementById('email').addEventListener('input', () => 
+    { 
         hideError('emailErrorMsg');  
         if (!isEmailValid()) 
         {
@@ -297,12 +308,12 @@ function listenFormSubmit()
             },
             body: JSON.stringify(payload) 
         })
-        .then(reponse => reponse.json())
-        .then(data => 
-        {    
-            localStorage.clear();
-            window.location.href = `confirmation.html?order_id=${data.orderId}`
-        })           
+            .then(reponse => reponse.json())
+            .then(data => 
+            {    
+                localStorage.clear();
+                window.location.href = `confirmation.html?order_id=${data.orderId}`
+            })           
     });
 }
 
